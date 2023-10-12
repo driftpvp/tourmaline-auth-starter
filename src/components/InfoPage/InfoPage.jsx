@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 
 function InfoPage() {
-  const user = useSelector((store) => store.user);
-  const [petList, setPetList] = useState([]);
+  const dispatch = useDispatch();
+  const petList = useSelector((store) => store.petList);
   const [petName, setPetName] = useState('');
 
   useEffect(() => {
@@ -12,22 +12,12 @@ function InfoPage() {
   }, []);
 
   const getPetList = () => {
-    axios.get('/api/pets')
-      .then(response => setPetList(response.data))
-      .catch(error => {
-        console.error(error);
-        alert('Something went wrong.');
-      });
+    dispatch({ type: 'FETCH_PET_LIST' })
   }
 
   const addPet = (e) => {
     e.preventDefault();
-    axios.post('/api/pets', { name: petName })
-      .then(response => getPetList())
-      .catch(error => {
-        console.error(error);
-        alert('Something went wrong.');
-      });
+    dispatch({ type: 'ADD_PET', payload: { name: petName }})
   }
 
   return (
